@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
     <style>
         :root {
             --solana-primary: #14F195;
@@ -49,23 +50,40 @@
             --search-bg: #1F2A2C;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text-primary);
             transition: background 0.2s, color 0.2s;
         }
+        .container { max-width: 1440px; margin: 0 auto; padding: 1.5rem 1.5rem 2.5rem; }
 
-        .container {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 1.5rem 1.5rem 2.5rem;
+        /* Navegação global */
+        .main-nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .main-nav a {
+            text-decoration: none;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .main-nav a.active {
+            background: var(--solana-primary);
+            color: var(--dark);
+        }
+        .main-nav a:hover:not(.active) {
+            background: var(--filter-bg);
+            color: var(--text-primary);
         }
 
         .header-row {
@@ -76,7 +94,6 @@
             gap: 1rem;
             margin-bottom: 1rem;
         }
-
         .dark-toggle {
             background: var(--card-bg);
             border: 1px solid var(--border-light);
@@ -91,22 +108,43 @@
             transition: all 0.2s;
             color: var(--text-primary);
         }
-
         .dark-toggle:hover {
             border-color: var(--solana-primary);
             background: var(--solana-primary);
             color: var(--dark);
         }
-
+        .connect-wallet {
+            background: linear-gradient(135deg, var(--solana-primary), var(--solana-gradient-end));
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--dark);
+        }
+        .connect-wallet:hover {
+            opacity: 0.9;
+            transform: scale(0.98);
+        }
+        .wallet-info {
+            background: var(--card-bg);
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border-light);
+        }
         .hero {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             padding: 2rem 0 1rem;
             background: linear-gradient(135deg, rgba(20,241,149,0.05), rgba(153,69,255,0.05));
             border-radius: 48px;
             margin-top: 1rem;
         }
-
         .hero h1 {
             font-size: 2.8rem;
             font-weight: 800;
@@ -117,14 +155,20 @@
             letter-spacing: -0.02em;
             margin-bottom: 0.5rem;
         }
-
-        .hero .sub {
-            font-size: 1.1rem;
+        .trust-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1.2rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
         }
-
+        .trust-row span::before {
+            content: "✓ ";
+            color: var(--solana-primary);
+            font-weight: bold;
+        }
         .stats-bar {
             display: flex;
             justify-content: center;
@@ -134,7 +178,6 @@
             font-size: 0.9rem;
             font-weight: 500;
         }
-
         .stat-card {
             background: var(--card-bg);
             padding: 0.5rem 1.2rem;
@@ -142,14 +185,6 @@
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-light);
         }
-
-        .stat-card span {
-            font-weight: 700;
-            color: var(--solana-primary);
-            font-size: 1.2rem;
-            margin-right: 0.3rem;
-        }
-
         .controls {
             background: var(--card-bg);
             border-radius: 60px;
@@ -162,7 +197,6 @@
             justify-content: space-between;
             gap: 1rem;
         }
-
         .search-box {
             flex: 2;
             min-width: 200px;
@@ -173,7 +207,6 @@
             border-radius: 40px;
             padding: 0.4rem 1rem;
         }
-
         .search-box input {
             width: 100%;
             background: transparent;
@@ -184,14 +217,12 @@
             font-family: inherit;
             color: var(--text-primary);
         }
-
         .filter-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             align-items: center;
         }
-
         .filter-chip {
             background: var(--filter-bg);
             border: none;
@@ -203,18 +234,15 @@
             transition: 0.2s;
             color: var(--text-secondary);
         }
-
         .filter-chip.active {
             background: var(--solana-primary);
             color: var(--dark);
         }
-
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 1.8rem;
         }
-
         .card {
             background: var(--card-bg);
             border-radius: 32px;
@@ -222,27 +250,22 @@
             transition: all 0.25s ease;
             overflow: hidden;
         }
-
         .card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-md);
         }
-
         .card-header {
             padding: 1.2rem 1.5rem 0.6rem;
             border-bottom: 1px solid var(--border-light);
             background: var(--card-bg);
         }
-
         .card-header h2 {
             font-size: 1.5rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            letter-spacing: -0.3px;
         }
-
         .card-header h2 span {
             background: var(--solana-primary);
             color: var(--dark);
@@ -251,7 +274,6 @@
             padding: 0.15rem 0.6rem;
             border-radius: 30px;
         }
-
         .tools-list {
             padding: 1.2rem 1.5rem 1.5rem;
             display: flex;
@@ -259,7 +281,6 @@
             gap: 0.75rem;
             align-items: center;
         }
-
         .tool-chip {
             background: var(--card-bg);
             border: 1px solid var(--border-light);
@@ -275,24 +296,20 @@
             gap: 6px;
             flex-wrap: wrap;
         }
-
         .tool-chip:hover {
             background: #FEF7E8;
             border-color: var(--solana-primary);
             color: var(--solana-primary);
         }
-
         body.dark .tool-chip:hover {
             background: #2C3E3B;
             color: var(--solana-primary);
         }
-
         .badges {
             display: inline-flex;
             gap: 4px;
             margin-left: 4px;
         }
-
         .badge {
             font-size: 0.6rem;
             font-weight: 600;
@@ -302,25 +319,12 @@
             color: #3a4a4a;
             white-space: nowrap;
         }
-
         .badge.defi { background: var(--badge-defi); color: #0e6b6b; }
         .badge.rwa { background: var(--badge-rwa); color: #3a6b2a; }
         .badge.depin { background: var(--badge-depin); color: #b97f10; }
         .badge.infra { background: var(--badge-infra); color: #2c6e3c; }
         .badge.oracle { background: var(--badge-oracle); color: #6b2e6b; }
         .badge.solana { background: var(--badge-solana); color: #00A86B; }
-
-        body.dark .badge {
-            background: #2C3E3B;
-            color: #e0c8a0;
-        }
-        body.dark .badge.defi { background: #1A2C3A; color: #81d4fa; }
-        body.dark .badge.rwa { background: #2A3A2A; color: #8bc34a; }
-        body.dark .badge.depin { background: #3A2A1A; color: #ffaa66; }
-        body.dark .badge.infra { background: #1E3A2A; color: #8bc34a; }
-        body.dark .badge.oracle { background: #2A2A3A; color: #b39ddb; }
-        body.dark .badge.solana { background: #1E3A2A; color: #00ffa3; }
-
         .no-results {
             text-align: center;
             padding: 3rem;
@@ -328,7 +332,6 @@
             font-size: 1.1rem;
             grid-column: 1 / -1;
         }
-
         footer {
             margin-top: 3rem;
             text-align: center;
@@ -337,7 +340,6 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-
         @media (max-width: 720px) {
             .container { padding: 1rem; }
             .hero h1 { font-size: 2rem; }
@@ -348,16 +350,28 @@
 </head>
 <body>
 <div class="container">
+    <div class="main-nav">
+        <a href="index.html">₿ Bitcoin</a>
+        <a href="solana.html" class="active">◎ Solana</a>
+        <a href="defi.html">📊 DeFi Use Cases</a>
+        <a href="#">Ξ Ethereum</a>
+    </div>
     <div class="header-row">
-        <div class="lang-switcher" style="display: flex; gap: 0.5rem;">
-            <!-- placeholder para futura internacionalização -->
+        <div></div>
+        <div style="display: flex; gap: 1rem;">
+            <button id="connectWalletBtn" class="connect-wallet">Connect Phantom</button>
+            <button id="darkModeToggle" class="dark-toggle">🌙 Modo Escuro</button>
         </div>
-        <button id="darkModeToggle" class="dark-toggle">🌙 Modo Escuro</button>
     </div>
 
     <div class="hero">
         <h1>SOLANA ECOSYSTEM DIRECTORY</h1>
         <div class="sub">Mapping the financial infrastructure built on Solana.</div>
+        <div class="trust-row">
+            <span>Curated ecosystem mapping</span>
+            <span>Independent research</span>
+            <span>Updated 2026</span>
+        </div>
         <div class="stats-bar" id="statsBar">
             <div class="stat-card"><span id="totalProjects">0</span> Total Projects</div>
             <div class="stat-card"><span id="totalCategories">0</span> Categories</div>
@@ -371,9 +385,7 @@
             <span>🔍</span>
             <input type="text" id="searchInput" placeholder="Buscar projeto por nome...">
         </div>
-        <div class="filter-tags" id="filterTagsContainer">
-            <!-- filtros dinâmicos -->
-        </div>
+        <div class="filter-tags" id="filterTagsContainer"></div>
     </div>
 
     <div class="categories-grid" id="toolsGrid"></div>
@@ -386,51 +398,39 @@
 <script>
     // ==================== SOLANA PROJECTS DATA ====================
     const solanaProjects = [
-        // Stablecoins
         { name: "USDC", category: "Stablecoins", url: "https://circle.com/usdc", tags: ["stablecoin", "defi"] },
         { name: "USDT", category: "Stablecoins", url: "https://tether.to", tags: ["stablecoin", "defi"] },
-        // Lending
         { name: "Kamino", category: "Lending", url: "https://kamino.finance", tags: ["defi", "lending"] },
         { name: "Marginfi", category: "Lending", url: "https://marginfi.com", tags: ["defi", "lending"] },
         { name: "Solend", category: "Lending", url: "https://solend.fi", tags: ["defi", "lending"] },
-        // DEX
         { name: "Jupiter", category: "DEX", url: "https://jup.ag", tags: ["dex", "defi", "popular"] },
         { name: "Raydium", category: "DEX", url: "https://raydium.io", tags: ["dex", "defi"] },
         { name: "Orca", category: "DEX", url: "https://orca.so", tags: ["dex", "defi"] },
-        // Asset Management
         { name: "Squads", category: "Asset Management", url: "https://squads.so", tags: ["infra", "multisig"] },
         { name: "Meteora", category: "Asset Management", url: "https://meteora.ag", tags: ["defi", "liquidity"] },
-        // Liquid Staking
         { name: "Jito", category: "Liquid Staking", url: "https://jito.network", tags: ["defi", "lst"] },
         { name: "Sanctum", category: "Liquid Staking", url: "https://sanctum.so", tags: ["defi", "lst"] },
         { name: "Marinade", category: "Liquid Staking", url: "https://marinade.finance", tags: ["defi", "lst", "popular"] },
-        // RWA
         { name: "Ondo Finance", category: "RWA", url: "https://ondo.finance", tags: ["rwa", "defi"] },
         { name: "Maple Finance", category: "RWA", url: "https://maple.finance", tags: ["rwa", "credit"] },
-        // DePIN
         { name: "Helium", category: "DePIN", url: "https://helium.com", tags: ["depin", "iot"] },
         { name: "Hivemapper", category: "DePIN", url: "https://hivemapper.com", tags: ["depin", "data"] },
-        // Identity
         { name: "SNS", category: "Identity", url: "https://sns.id", tags: ["identity"] },
         { name: "AllDomains", category: "Identity", url: "https://alldomains.id", tags: ["identity"] },
-        // Oracles
         { name: "Pyth", category: "Oracles", url: "https://pyth.network", tags: ["oracle", "infra"] },
         { name: "Switchboard", category: "Oracles", url: "https://switchboard.xyz", tags: ["oracle"] },
-        // Data & Analytics
         { name: "Grass", category: "Data & Analytics", url: "https://grass.io", tags: ["depin", "data"] }
     ];
 
-    // Agrupar por categoria (e ordenar categorias por nome ou por quantidade)
+    // Agrupar por categoria e ordenar por quantidade
     const categoriesMap = new Map();
     for (const proj of solanaProjects) {
         if (!categoriesMap.has(proj.category)) categoriesMap.set(proj.category, []);
         categoriesMap.get(proj.category).push(proj);
     }
-    // Converter para array e ordenar por quantidade (decrescente)
     let categories = Array.from(categoriesMap.entries()).map(([name, items]) => ({ name, items }));
     categories.sort((a, b) => b.items.length - a.items.length);
 
-    // ==================== RENDERIZAÇÃO ====================
     let activeFilter = "all";
     let searchTerm = "";
 
@@ -487,13 +487,9 @@
     }
 
     function updateMetrics() {
-        // Total de projetos (únicos)
         const totalProjects = solanaProjects.length;
-        // Total de categorias (distintas)
         const uniqueCategories = new Set(solanaProjects.map(p => p.category)).size;
-        // Contagem de DeFi (projetos com tag "defi")
         const defiCount = solanaProjects.filter(p => p.tags.includes("defi")).length;
-        // Contagem de RWA (projetos com tag "rwa")
         const rwaCount = solanaProjects.filter(p => p.tags.includes("rwa")).length;
         document.getElementById("totalProjects").innerText = totalProjects;
         document.getElementById("totalCategories").innerText = uniqueCategories;
@@ -502,12 +498,6 @@
     }
 
     function updateFilters() {
-        // Criar filtros com base nas tags únicas (exceto "all")
-        const allTags = new Set();
-        solanaProjects.forEach(p => {
-            p.tags.forEach(tag => allTags.add(tag));
-        });
-        // Filtros principais: DeFi, RWA, DePIN, Oracle, Infra, etc.
         const filterList = [
             { label: "Todos", value: "all", active: true },
             { label: "📈 DeFi", value: "defi" },
@@ -521,13 +511,100 @@
         container.querySelectorAll('.filter-chip').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 activeFilter = btn.getAttribute('data-filter');
-                updateFilters(); // re-renderiza botões com estado ativo
+                updateFilters();
                 renderProjects();
             });
         });
     }
 
-    // ==================== DARK MODE (consistente com o index) ====================
+    // ==================== WALLET CONNECT ====================
+    let walletConnected = false;
+    let publicKey = null;
+    let connection = null;
+
+    async function connectPhantom() {
+        if (!window.solana || !window.solana.isPhantom) {
+            alert("Phantom wallet not found. Please install Phantom extension.");
+            return;
+        }
+        try {
+            const resp = await window.solana.connect();
+            publicKey = resp.publicKey;
+            walletConnected = true;
+            // Initialize connection to mainnet-beta
+            connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
+            // Update UI
+            updateWalletUI();
+            fetchBalances();
+        } catch (err) {
+            console.error("User rejected connection", err);
+        }
+    }
+
+    async function fetchBalances() {
+        if (!publicKey || !connection) return;
+        try {
+            // SOL balance
+            const solBalance = await connection.getBalance(publicKey);
+            const solInSOL = solBalance / 1e9;
+
+            // USDC token account (mint: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v)
+            const usdcMint = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+            const tokenAccounts = await connection.getTokenAccountsByOwner(publicKey, { mint: usdcMint });
+            let usdcBalance = 0;
+            if (tokenAccounts.value.length > 0) {
+                const accountInfo = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
+                usdcBalance = accountInfo.value.uiAmount || 0;
+            }
+
+            // Simple LST (jitoSOL) as example: JitoSOL mint: J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn
+            const jitoMint = "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn";
+            const jitoAccounts = await connection.getTokenAccountsByOwner(publicKey, { mint: jitoMint });
+            let jitoBalance = 0;
+            if (jitoAccounts.value.length > 0) {
+                const accountInfo = await connection.getTokenAccountBalance(jitoAccounts.value[0].pubkey);
+                jitoBalance = accountInfo.value.uiAmount || 0;
+            }
+
+            updateWalletUI(solInSOL, usdcBalance, jitoBalance);
+        } catch (err) {
+            console.error("Error fetching balances", err);
+        }
+    }
+
+    function updateWalletUI(sol = null, usdc = null, lst = null) {
+        const btn = document.getElementById("connectWalletBtn");
+        if (walletConnected && publicKey) {
+            const shortAddr = publicKey.toBase58().slice(0, 6) + "..." + publicKey.toBase58().slice(-4);
+            let infoHtml = `<div class="wallet-info">🔑 ${shortAddr}`;
+            if (sol !== null) infoHtml += `<br>◎ ${sol.toFixed(4)} SOL`;
+            if (usdc !== null) infoHtml += `<br>💵 ${usdc.toFixed(2)} USDC`;
+            if (lst !== null && lst > 0) infoHtml += `<br>🥩 ${lst.toFixed(4)} jitoSOL`;
+            infoHtml += `</div>`;
+            // Replace button with info and disconnect option
+            btn.outerHTML = infoHtml + `<button id="disconnectWalletBtn" class="connect-wallet" style="background:#444;">Disconnect</button>`;
+            document.getElementById("disconnectWalletBtn")?.addEventListener("click", disconnectWallet);
+        } else {
+            btn.innerHTML = "Connect Phantom";
+            btn.onclick = connectPhantom;
+        }
+    }
+
+    function disconnectWallet() {
+        if (window.solana) window.solana.disconnect();
+        walletConnected = false;
+        publicKey = null;
+        connection = null;
+        const btn = document.getElementById("connectWalletBtn");
+        btn.innerHTML = "Connect Phantom";
+        btn.onclick = connectPhantom;
+        // Remove extra disconnect button if exists
+        const discBtn = document.getElementById("disconnectWalletBtn");
+        if (discBtn) discBtn.remove();
+        updateWalletUI();
+    }
+
+    // ==================== DARK MODE ====================
     function initDarkMode() {
         const stored = localStorage.getItem("solanaToolsDark");
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -540,20 +617,18 @@
         });
     }
 
-    // ==================== EVENTOS ====================
     function init() {
         initDarkMode();
         updateMetrics();
         updateFilters();
         renderProjects();
-
         const searchInput = document.getElementById("searchInput");
         searchInput.addEventListener("input", (e) => {
             searchTerm = e.target.value;
             renderProjects();
         });
+        document.getElementById("connectWalletBtn").addEventListener("click", connectPhantom);
     }
-
     init();
 </script>
 </body>
